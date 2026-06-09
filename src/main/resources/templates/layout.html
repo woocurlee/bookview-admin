@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<!--
+  공통 레이아웃: 좌측 사이드바 + 상단 breadcrumb.
+  각 페이지는 th:replace="~{layout :: document('메뉴키', '제목', ~{::content})}" 로 본문을 끼워 넣는다.
+-->
+<html lang="ko" xmlns:th="http://www.thymeleaf.org" th:fragment="document(active, crumb, content)">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title th:text="'bookview admin · ' + ${crumb}">bookview admin</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-50 text-gray-800">
+<div class="flex min-h-screen">
+    <!-- 사이드바 -->
+    <aside class="w-56 shrink-0 bg-gray-900 text-gray-100 flex flex-col">
+        <div class="px-5 py-4 text-lg font-bold border-b border-gray-700">
+            📚 bookview <span class="text-gray-400 text-sm">admin</span>
+        </div>
+        <nav class="flex-1 px-2 py-3 space-y-1">
+            <a th:href="@{/}"
+               th:classappend="${active == 'dashboard'} ? 'bg-gray-700 text-white' : 'text-gray-300 hover:bg-gray-800'"
+               class="block px-3 py-2 rounded text-sm">대시보드</a>
+            <a th:href="@{/users}"
+               th:classappend="${active == 'users'} ? 'bg-gray-700 text-white' : 'text-gray-300 hover:bg-gray-800'"
+               class="block px-3 py-2 rounded text-sm">유저</a>
+            <a th:href="@{/reviews}"
+               th:classappend="${active == 'reviews'} ? 'bg-gray-700 text-white' : 'text-gray-300 hover:bg-gray-800'"
+               class="block px-3 py-2 rounded text-sm">리뷰</a>
+            <a th:href="@{/comments}"
+               th:classappend="${active == 'comments'} ? 'bg-gray-700 text-white' : 'text-gray-300 hover:bg-gray-800'"
+               class="block px-3 py-2 rounded text-sm">댓글</a>
+        </nav>
+    </aside>
+
+    <!-- 본문 -->
+    <div class="flex-1 flex flex-col min-w-0">
+        <header class="bg-white border-b px-6 py-3">
+            <nav class="text-sm text-gray-500">
+                <span>관리자</span>
+                <span class="mx-1">/</span>
+                <span class="text-gray-900 font-medium" th:text="${crumb}">페이지</span>
+            </nav>
+        </header>
+        <main class="flex-1 p-6">
+            <div th:replace="${content}">본문이 여기에 들어갑니다.</div>
+        </main>
+    </div>
+</div>
+<script src="/js/admin.js" defer></script>
+</body>
+</html>
