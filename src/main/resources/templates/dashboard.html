@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{layout :: document('dashboard', '대시보드', ~{::content})}">
+<body>
+<div th:fragment="content">
+    <!-- 통계 카드 4개 -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+        <div class="bg-white rounded-lg border p-5">
+            <div class="text-sm text-gray-500">전체 유저 (ACTIVE)</div>
+            <div class="mt-2 text-3xl font-bold" th:text="${stats.activeUserCount}">0</div>
+        </div>
+        <div class="bg-white rounded-lg border p-5">
+            <div class="text-sm text-gray-500">전체 리뷰 (ACTIVE)</div>
+            <div class="mt-2 text-3xl font-bold" th:text="${stats.activeReviewCount}">0</div>
+        </div>
+        <div class="bg-white rounded-lg border p-5">
+            <div class="text-sm text-gray-500">전체 댓글 (ACTIVE)</div>
+            <div class="mt-2 text-3xl font-bold" th:text="${stats.activeCommentCount}">0</div>
+        </div>
+        <div class="bg-white rounded-lg border p-5">
+            <div class="text-sm text-gray-500">오늘 가입 유저</div>
+            <div class="mt-2 text-3xl font-bold text-blue-600" th:text="${stats.todaySignupCount}">0</div>
+        </div>
+    </div>
+
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <!-- 최근 가입 유저 5명 -->
+        <section class="bg-white rounded-lg border">
+            <h2 class="px-5 py-3 border-b font-semibold">최근 가입 유저</h2>
+            <table class="w-full text-sm">
+                <thead class="bg-gray-50 text-gray-500 text-left">
+                <tr>
+                    <th class="px-5 py-2">userNo</th>
+                    <th class="px-5 py-2">nickname</th>
+                    <th class="px-5 py-2">email</th>
+                    <th class="px-5 py-2">가입일</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="u : ${recentUsers}" class="border-t">
+                    <td class="px-5 py-2" th:text="${u.userNo}">-</td>
+                    <td class="px-5 py-2" th:text="${u.nickname}">-</td>
+                    <td class="px-5 py-2 text-gray-500" th:text="${u.email}">-</td>
+                    <td class="px-5 py-2 text-gray-500"
+                        th:text="${u.createdAt != null} ? ${#temporals.format(u.createdAt, 'yyyy-MM-dd HH:mm')} : '-'">-</td>
+                </tr>
+                <tr th:if="${recentUsers.isEmpty()}">
+                    <td colspan="4" class="px-5 py-6 text-center text-gray-400">데이터 없음</td>
+                </tr>
+                </tbody>
+            </table>
+        </section>
+
+        <!-- 최근 작성 리뷰 5개 -->
+        <section class="bg-white rounded-lg border">
+            <h2 class="px-5 py-3 border-b font-semibold">최근 작성 리뷰</h2>
+            <table class="w-full text-sm">
+                <thead class="bg-gray-50 text-gray-500 text-left">
+                <tr>
+                    <th class="px-5 py-2">reviewNo</th>
+                    <th class="px-5 py-2">bookTitle</th>
+                    <th class="px-5 py-2">rating</th>
+                    <th class="px-5 py-2">작성일</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="r : ${recentReviews}" class="border-t">
+                    <td class="px-5 py-2" th:text="${r.reviewNo}">-</td>
+                    <td class="px-5 py-2" th:text="${r.bookTitle}">-</td>
+                    <td class="px-5 py-2" th:text="${r.rating}">-</td>
+                    <td class="px-5 py-2 text-gray-500"
+                        th:text="${r.createdAt != null} ? ${#temporals.format(r.createdAt, 'yyyy-MM-dd HH:mm')} : '-'">-</td>
+                </tr>
+                <tr th:if="${recentReviews.isEmpty()}">
+                    <td colspan="4" class="px-5 py-6 text-center text-gray-400">데이터 없음</td>
+                </tr>
+                </tbody>
+            </table>
+        </section>
+    </div>
+</div>
+</body>
+</html>
