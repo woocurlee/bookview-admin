@@ -24,4 +24,6 @@ interface UserRepository : MongoRepository<User, String> {
 
     // 대시보드: 최근 가입 유저
     fun findTop5ByOrderByCreatedAtDesc(): List<User>
+
+    fun findAllByGoogleIdIn(googleIds: List<String>): List<User>
 }
