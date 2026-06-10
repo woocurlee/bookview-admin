@@ -1,5 +1,6 @@
 package com.woocurlee.bookviewadmin.controller
 
+import com.woocurlee.bookviewadmin.domain.Status
 import com.woocurlee.bookviewadmin.service.AdminCommentService
 import com.woocurlee.bookviewadmin.service.AdminReviewService
 import com.woocurlee.bookviewadmin.service.AdminUserService
@@ -50,14 +51,17 @@ class ViewController(
     @GetMapping("/reviews")
     fun reviews(
         @RequestParam(required = false) q: String?,
+        @RequestParam(required = false) status: String?,
         @RequestParam(defaultValue = "0") page: Int,
         @RequestParam(defaultValue = "20") size: Int,
         model: Model,
     ): String {
         val pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "createdAt"))
+        val statusFilter = status?.let { runCatching { Status.valueOf(it) }.getOrNull() }
         model.addAttribute("active", "reviews")
         model.addAttribute("q", q ?: "")
-        model.addAttribute("page", reviewService.list(q, pageable))
+        model.addAttribute("status", status ?: "")
+        model.addAttribute("page", reviewService.list(q, statusFilter, pageable))
         model.addAttribute("bookviewBaseUrl", bookviewBaseUrl)
         return "reviews"
     }
@@ -65,14 +69,17 @@ class ViewController(
     @GetMapping("/comments")
     fun comments(
         @RequestParam(required = false) q: String?,
+        @RequestParam(required = false) status: String?,
         @RequestParam(defaultValue = "0") page: Int,
         @RequestParam(defaultValue = "20") size: Int,
         model: Model,
     ): String {
         val pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "createdAt"))
+        val statusFilter = status?.let { runCatching { Status.valueOf(it) }.getOrNull() }
         model.addAttribute("active", "comments")
         model.addAttribute("q", q ?: "")
-        model.addAttribute("page", commentService.list(q, pageable))
+        model.addAttribute("status", status ?: "")
+        model.addAttribute("page", commentService.list(q, statusFilter, pageable))
         return "comments"
     }
 }
