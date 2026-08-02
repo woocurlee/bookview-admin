@@ -13,29 +13,46 @@
 <body class="bg-gray-50 text-gray-800">
 <div class="flex min-h-screen">
     <!-- 사이드바 -->
-    <aside class="w-56 shrink-0 bg-gray-900 text-gray-100 flex flex-col">
-        <div class="px-5 py-4 text-lg font-bold border-b border-gray-700">
-            📚 bookview <span class="text-gray-400 text-sm">admin</span>
+    <aside id="sidebar" class="w-56 shrink-0 bg-gray-900 text-gray-100 flex flex-col transition-all duration-200">
+        <div class="px-5 py-4 text-lg font-bold border-b border-gray-700 whitespace-nowrap overflow-hidden">
+            📚 <span class="sidebar-label">bookview <span class="text-gray-400 text-sm">admin</span></span>
         </div>
         <nav class="flex-1 px-2 py-3 space-y-1">
             <a th:href="@{/}"
                th:classappend="${active == 'dashboard'} ? 'bg-gray-700 text-white' : 'text-gray-300 hover:bg-gray-800'"
-               class="block px-3 py-2 rounded text-sm">대시보드</a>
+               class="flex items-center gap-2 px-3 py-2 rounded text-sm whitespace-nowrap overflow-hidden">
+                <span class="shrink-0">📊</span><span class="sidebar-label">대시보드</span>
+            </a>
             <a th:href="@{/users}"
                th:classappend="${active == 'users'} ? 'bg-gray-700 text-white' : 'text-gray-300 hover:bg-gray-800'"
-               class="block px-3 py-2 rounded text-sm">유저</a>
+               class="flex items-center gap-2 px-3 py-2 rounded text-sm whitespace-nowrap overflow-hidden">
+                <span class="shrink-0">👤</span><span class="sidebar-label">유저</span>
+            </a>
             <a th:href="@{/reviews}"
                th:classappend="${active == 'reviews'} ? 'bg-gray-700 text-white' : 'text-gray-300 hover:bg-gray-800'"
-               class="block px-3 py-2 rounded text-sm">리뷰</a>
+               class="flex items-center gap-2 px-3 py-2 rounded text-sm whitespace-nowrap overflow-hidden">
+                <span class="shrink-0">📝</span><span class="sidebar-label">리뷰</span>
+            </a>
             <a th:href="@{/comments}"
                th:classappend="${active == 'comments'} ? 'bg-gray-700 text-white' : 'text-gray-300 hover:bg-gray-800'"
-               class="block px-3 py-2 rounded text-sm">댓글</a>
+               class="flex items-center gap-2 px-3 py-2 rounded text-sm whitespace-nowrap overflow-hidden">
+                <span class="shrink-0">💬</span><span class="sidebar-label">댓글</span>
+            </a>
         </nav>
     </aside>
 
     <!-- 본문 -->
     <div class="flex-1 flex flex-col min-w-0">
-        <header class="bg-white border-b px-6 py-3">
+        <header class="bg-white border-b px-4 py-3 flex items-center gap-3">
+            <!-- 사이드바 토글 버튼 -->
+            <button id="sidebar-toggle" class="p-1.5 rounded hover:bg-gray-100 transition-colors text-gray-500" title="사이드바 접기/펼치기">
+                <svg id="icon-collapse" class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                    <path d="M11 19l-7-7 7-7M21 19l-7-7 7-7"/>
+                </svg>
+                <svg id="icon-expand" class="w-5 h-5 hidden" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                    <path d="M13 5l7 7-7 7M3 5l7 7-7 7"/>
+                </svg>
+            </button>
             <nav class="text-sm text-gray-500">
                 <span>관리자</span>
                 <span class="mx-1">/</span>

@@ -15,5 +15,18 @@ interface CommentRepository : MongoRepository<Comment, String> {
         pageable: Pageable,
     ): Page<Comment>
 
+    // status 필터 + 키워드 검색
+    @Query("{ 'status': ?1, 'content': { '\$regex': ?0, '\$options': 'i' } }")
+    fun searchByStatus(
+        keyword: String,
+        status: Status,
+        pageable: Pageable,
+    ): Page<Comment>
+
+    fun findByStatus(
+        status: Status,
+        pageable: Pageable,
+    ): Page<Comment>
+
     fun countByStatus(status: Status): Long
 }

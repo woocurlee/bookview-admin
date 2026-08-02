@@ -17,6 +17,21 @@ interface ReviewRepository : MongoRepository<Review, String> {
         pageable: Pageable,
     ): Page<Review>
 
+    // status 필터 + 키워드 검색
+    @Query(
+        "{ 'status': ?1, '\$or': [ { 'bookTitle': { '\$regex': ?0, '\$options': 'i' } }, { 'bookAuthor': { '\$regex': ?0, '\$options': 'i' } } ] }",
+    )
+    fun searchByStatus(
+        keyword: String,
+        status: Status,
+        pageable: Pageable,
+    ): Page<Review>
+
+    fun findByStatus(
+        status: Status,
+        pageable: Pageable,
+    ): Page<Review>
+
     fun countByStatus(status: Status): Long
 
     // 대시보드: 최근 작성 리뷰

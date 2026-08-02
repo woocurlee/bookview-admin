@@ -4,25 +4,30 @@
 <body>
 <div th:fragment="content">
     <!-- 검색 -->
-    <form method="get" th:action="@{/users}" class="mb-4 flex gap-2">
-        <input type="text" name="q" th:value="${q}" placeholder="nickname 또는 email 검색"
-               class="border rounded px-3 py-2 text-sm w-72" />
+    <form method="get" th:action="@{/users}" class="mb-4 flex gap-2 items-center">
+        <div class="relative">
+            <svg class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                <circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/>
+            </svg>
+            <input type="text" name="q" th:value="${q}" placeholder="닉네임 또는 이메일로 검색" autocomplete="off"
+                   class="border rounded-lg pl-9 pr-4 py-2 text-sm w-72 focus:outline-none focus:ring-2 focus:ring-gray-300" />
+        </div>
         <input type="hidden" name="size" th:value="${page.size}" />
-        <button type="submit" class="bg-gray-900 text-white text-sm px-4 py-2 rounded">검색</button>
-        <a th:href="@{/users}" class="text-sm px-4 py-2 rounded border">초기화</a>
+        <button type="submit" class="bg-gray-900 text-white text-sm px-4 py-2 rounded-lg hover:bg-gray-700 transition-colors">검색</button>
+        <a th:href="@{/users}" class="text-sm px-4 py-2 rounded-lg border hover:bg-gray-50 transition-colors text-gray-600">초기화</a>
     </form>
 
     <div class="bg-white rounded-lg border overflow-hidden">
         <table class="w-full text-sm">
             <thead class="bg-gray-50 text-gray-500 text-left">
             <tr>
-                <th class="px-4 py-2">userNo</th>
-                <th class="px-4 py-2">nickname</th>
-                <th class="px-4 py-2">email</th>
-                <th class="px-4 py-2">status</th>
-                <th class="px-4 py-2">createdAt</th>
-                <th class="px-4 py-2">lastLoginAt</th>
-                <th class="px-4 py-2">액션</th>
+                <th class="px-4 py-2 w-16 whitespace-nowrap">번호</th>
+                <th class="px-4 py-2 w-32 whitespace-nowrap">닉네임</th>
+                <th class="px-4 py-2 whitespace-nowrap">이메일</th>
+                <th class="px-4 py-2 w-20 whitespace-nowrap">상태</th>
+                <th class="px-4 py-2 w-36 whitespace-nowrap">가입일</th>
+                <th class="px-4 py-2 w-36 whitespace-nowrap">마지막 로그인</th>
+                <th class="px-4 py-2 w-20 whitespace-nowrap">액션</th>
             </tr>
             </thead>
             <tbody>
@@ -38,9 +43,10 @@
                 <td class="px-4 py-2 text-gray-500"
                     th:text="${u.lastLoginAt != null} ? ${#temporals.format(u.lastLoginAt, 'yyyy-MM-dd HH:mm')} : '-'">-</td>
                 <td class="px-4 py-2">
-                    <button type="button"
-                            class="js-toggle-status text-xs px-3 py-1 rounded border hover:bg-gray-100"
-                            th:attr="data-type='users', data-id=${u.id}">상태 토글</button>
+                    <button th:if="${u.status.name() != 'DELETED'}" type="button"
+                            class="js-block-action text-xs px-3 py-1 rounded border hover:bg-gray-100"
+                            th:attr="data-type='users', data-id=${u.id}, data-status=${u.status}"
+                            th:text="${u.status.name() == 'ACTIVE'} ? '차단' : '차단 해제'">차단</button>
                 </td>
             </tr>
             <tr th:if="${page.isEmpty()}">
@@ -50,7 +56,7 @@
         </table>
     </div>
 
-    <div th:replace="~{fragments :: pagination(${page}, '/users', ${q})}"></div>
+    <div th:replace="~{fragments :: pagination(${page}, '/users', ${q}, '')}"></div>
 </div>
 </body>
 </html>

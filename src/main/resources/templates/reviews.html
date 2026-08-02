@@ -4,26 +4,37 @@
 <body>
 <div th:fragment="content">
     <!-- 검색 -->
-    <form method="get" th:action="@{/reviews}" class="mb-4 flex gap-2">
-        <input type="text" name="q" th:value="${q}" placeholder="bookTitle 또는 bookAuthor 검색"
-               class="border rounded px-3 py-2 text-sm w-72" />
+    <form method="get" th:action="@{/reviews}" class="mb-4 flex gap-2 items-center">
+        <div class="relative">
+            <svg class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                <circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/>
+            </svg>
+            <input type="text" name="q" th:value="${q}" placeholder="책 제목 또는 저자로 검색" autocomplete="off"
+                   class="border rounded-lg pl-9 pr-4 py-2 text-sm w-72 focus:outline-none focus:ring-2 focus:ring-gray-300" />
+        </div>
+        <select name="status" class="border rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-gray-300 text-gray-700">
+            <option value="" th:selected="${#strings.isEmpty(status)}">전체</option>
+            <option value="ACTIVE" th:selected="${status == 'ACTIVE'}">활성</option>
+            <option value="BLOCK" th:selected="${status == 'BLOCK'}">차단</option>
+            <option value="DELETED" th:selected="${status == 'DELETED'}">삭제</option>
+        </select>
         <input type="hidden" name="size" th:value="${page.size}" />
-        <button type="submit" class="bg-gray-900 text-white text-sm px-4 py-2 rounded">검색</button>
-        <a th:href="@{/reviews}" class="text-sm px-4 py-2 rounded border">초기화</a>
+        <button type="submit" class="bg-gray-900 text-white text-sm px-4 py-2 rounded-lg hover:bg-gray-700 transition-colors">검색</button>
+        <a th:href="@{/reviews}" class="text-sm px-4 py-2 rounded-lg border hover:bg-gray-50 transition-colors text-gray-600">초기화</a>
     </form>
 
     <div class="bg-white rounded-lg border overflow-hidden">
         <table class="w-full text-sm">
             <thead class="bg-gray-50 text-gray-500 text-left">
             <tr>
-                <th class="px-4 py-2">reviewNo</th>
-                <th class="px-4 py-2">bookTitle</th>
-                <th class="px-4 py-2">작성자</th>
-                <th class="px-4 py-2">rating</th>
-                <th class="px-4 py-2">likeCount</th>
-                <th class="px-4 py-2">status</th>
-                <th class="px-4 py-2">createdAt</th>
-                <th class="px-4 py-2">액션</th>
+                <th class="px-4 py-2 w-16 whitespace-nowrap">번호</th>
+                <th class="px-4 py-2 whitespace-nowrap">책 제목</th>
+                <th class="px-4 py-2 w-28 whitespace-nowrap">작성자</th>
+                <th class="px-4 py-2 w-16 whitespace-nowrap">별점</th>
+                <th class="px-4 py-2 w-20 whitespace-nowrap">좋아요</th>
+                <th class="px-4 py-2 w-20 whitespace-nowrap">상태</th>
+                <th class="px-4 py-2 w-36 whitespace-nowrap">작성일</th>
+                <th class="px-4 py-2 w-32 whitespace-nowrap">액션</th>
             </tr>
             </thead>
             <tbody>
@@ -39,12 +50,13 @@
                 <td class="px-4 py-2 text-gray-500"
                     th:text="${r.createdAt != null} ? ${#temporals.format(r.createdAt, 'yyyy-MM-dd HH:mm')} : '-'">-</td>
                 <td class="px-4 py-2 whitespace-nowrap">
+                    <button th:if="${r.status.name() != 'DELETED'}" type="button"
+                            class="js-block-action text-xs px-3 py-1 rounded border hover:bg-gray-100"
+                            th:attr="data-type='reviews', data-id=${r.id}, data-status=${r.status}"
+                            th:text="${r.status.name() == 'ACTIVE'} ? '차단' : '차단 해제'">차단</button>
                     <button type="button"
-                            class="js-toggle-status text-xs px-3 py-1 rounded border hover:bg-gray-100"
-                            th:attr="data-type='reviews', data-id=${r.id}">상태 토글</button>
-                    <a th:if="${r.reviewNo != null}"
-                       th:href="${bookviewBaseUrl} + '/r/' + ${r.reviewNo}" target="_blank" rel="noopener"
-                       class="text-xs px-3 py-1 rounded border hover:bg-gray-100 text-blue-600">원문 보기</a>
+                            class="js-review-detail text-xs px-3 py-1 rounded border hover:bg-gray-100 text-blue-600"
+                            th:attr="data-id=${r.id}">상세 보기</button>
                 </td>
             </tr>
             <tr th:if="${page.isEmpty()}">
@@ -54,7 +66,7 @@
         </table>
     </div>
 
-    <div th:replace="~{fragments :: pagination(${page}, '/reviews', ${q})}"></div>
+    <div th:replace="~{fragments :: pagination(${page}, '/reviews', ${q}, ${status})}"></div>
 </div>
 </body>
 </html>
