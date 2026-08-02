@@ -1,0 +1,8 @@
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info
+  endpoint:
+    health:
+      show-details: always # 내부망(Tailscale IP 허용목록) 전용이라 상세 노출 무방
